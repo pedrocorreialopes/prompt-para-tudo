@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptForge AI — Crie prompts perfeitos para qualquer IA</title>
+  <meta name="description" content="PromptForge AI cria prompts perfeitos para ChatGPT, Midjourney, DALL-E, Runway, Sora, Claude, Gemini, Cursor e muitas outras IAs.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0B1120] text-slate-200 antialiased min-h-screen overflow-x-hidden">
+  <!-- Gradients de fundo -->
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute -top-[20vh] -left-[10vw] w-[60vw] h-[60vw] rounded-full bg-[#3B82F6]/20 blur-[120px] animate-pulse-slow"></div>
+    <div class="absolute top-[40vh] -right-[10vw] w-[50vw] h-[50vw] rounded-full bg-[#8B5CF6]/15 blur-[120px] animate-pulse-slow" style="animation-delay:2s"></div>
+    <div class="absolute bottom-[10vh] left-[30vw] w-[40vw] h-[40vw] rounded-full bg-[#14B8A6]/10 blur-[120px] animate-pulse-slow" style="animation-delay:4s"></div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-[#0B1120]/80 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3 group" onclick="router.navigate('home'); return false;">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#3B82F6] to-[#8B5CF6] flex items-center justify-center shadow-lg shadow-[#3B82F6]/30 group-hover:scale-105 transition-transform">
+          <i data-lucide="flame" class="w-5 h-5 text-white"></i>
+        </div>
+        <span class="font-bold text-xl tracking-tight text-white">PromptForge<span class="text-[#3B82F6]"> AI</span></span>
+      </a>
+      <nav class="hidden md:flex items-center gap-2">
+        <button onclick="router.navigate('new')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-colors">Novo</button>
+        <button onclick="router.navigate('history')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-colors">Histórico</button>
+        <button onclick="router.navigate('favorites')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-colors">Favoritos</button>
+        <button onclick="router.navigate('admin')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-colors">Admin</button>
+      </nav>
+      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="fixed inset-0 z-40 bg-[#0B1120]/95 backdrop-blur-xl hidden flex-col items-center justify-center gap-6">
+    <button onclick="router.navigate('new'); mobileMenu.close()" class="text-2xl font-semibold text-slate-200 hover:text-white">Novo Prompt</button>
+    <button onclick="router.navigate('history'); mobileMenu.close()" class="text-2xl font-semibold text-slate-200 hover:text-white">Histórico</button>
+    <button onclick="router.navigate('favorites'); mobileMenu.close()" class="text-2xl font-semibold text-slate-200 hover:text-white">Favoritos</button>
+    <button onclick="router.navigate('admin'); mobileMenu.close()" class="text-2xl font-semibold text-slate-200 hover:text-white">Admin</button>
+    <button onclick="mobileMenu.close()" class="mt-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-8 h-8"></i></button>
+  </div>
+
+  <main class="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <!-- Home -->
+    <section id="view-home" class="view min-h-[80vh] flex flex-col items-center justify-center text-center">
+      <div class="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#3B82F6]/30 bg-[#3B82F6]/10 text-[#3B82F6] text-sm font-medium mb-8">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span>Powered by Inteligência Artificial</span>
+      </div>
+      <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 max-w-4xl leading-tight">
+        Crie prompts <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6]">perfeitos</span> para qualquer IA.
+      </h1>
+      <p class="text-lg md:text-xl text-slate-400 max-w-2xl mb-10">
+        Responda a perguntas inteligentes e gere prompts estruturados, otimizados e prontos para ChatGPT, Claude, Midjourney, DALL-E, Runway, Sora e muito mais.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <button onclick="router.navigate('new')" class="px-8 py-4 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] text-white font-semibold shadow-lg shadow-[#3B82F6]/30 hover:shadow-[#3B82F6]/50 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+          <i data-lucide="plus-circle" class="w-5 h-5"></i>
+          Criar Novo Prompt
+        </button>
+        <button onclick="router.navigate('history')" class="px-8 py-4 rounded-xl border border-white/15 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+          <i data-lucide="history" class="w-5 h-5"></i>
+          Ver Histórico
+        </button>
+      </div>
+
+      <!-- Preview stats -->
+      <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl">
+        <div class="glass-card p-5 rounded-2xl text-center">
+          <div class="text-2xl font-bold text-white" id="stat-prompts">0</div>
+          <div class="text-xs text-slate-400 mt-1">Prompts gerados</div>
+        </div>
+        <div class="glass-card p-5 rounded-2xl text-center">
+          <div class="text-2xl font-bold text-white" id="stat-categories">35+</div>
+          <div class="text-xs text-slate-400 mt-1">Categorias</div>
+        </div>
+        <div class="glass-card p-5 rounded-2xl text-center">
+          <div class="text-2xl font-bold text-white" id="stat-languages">3</div>
+          <div class="text-xs text-slate-400 mt-1">Idiomas</div>
+        </div>
+        <div class="glass-card p-5 rounded-2xl text-center">
+          <div class="text-2xl font-bold text-white" id="stat-engines">15+</div>
+          <div class="text-xs text-slate-400 mt-1">IAs compatíveis</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- New Prompt Flow -->
+    <section id="view-new" class="view hidden">
+      <div class="max-w-4xl mx-auto">
+        <!-- Progress -->
+        <div class="mb-8">
+          <div class="flex justify-between items-end mb-3">
+            <span class="text-sm text-slate-400">Progresso</span>
+            <span id="progress-text" class="text-sm font-semibold text-[#3B82F6]">Passo 1 de 3</span>
+          </div>
+          <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] rounded-full transition-all duration-500" style="width:33%"></div>
+          </div>
+        </div>
+
+        <!-- Step 1: Category -->
+        <div id="step-category" class="step">
+          <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-white mb-3">O que você deseja criar?</h2>
+            <p class="text-slate-400">Escolha uma categoria para começar o fluxo inteligente.</p>
+          </div>
+          <div id="category-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <!-- categories injected by JS -->
+          </div>
+        </div>
+
+        <!-- Step 2: Questions -->
+        <div id="step-questions" class="step hidden">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 id="questions-title" class="text-2xl font-bold text-white">Perguntas</h2>
+              <p class="text-slate-400 text-sm mt-1">Responda com o máximo de detalhes para um prompt mais preciso.</p>
+            </div>
+            <button onclick="flow.goBackToCategory()" class="text-sm text-slate-400 hover:text-white flex items-center gap-1">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar
+            </button>
+          </div>
+          <div id="questions-form" class="space-y-5">
+            <!-- questions injected by JS -->
+          </div>
+          <div class="mt-8 flex justify-between">
+            <button onclick="flow.goBackToCategory()" class="px-6 py-3 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-colors">Voltar</button>
+            <button onclick="flow.goToReview()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] text-white font-semibold hover:shadow-lg hover:shadow-[#3B82F6]/30 transition-all flex items-center gap-2">
+              Revisar <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Review -->
+        <div id="step-review" class="step hidden">
+          <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-white mb-3">Revise suas respostas</h2>
+            <p class="text-slate-400">Confira o resumo antes de gerar o prompt final.</p>
+          </div>
+          <div id="review-card" class="glass-card rounded-2xl p-6 sm:p-8">
+            <!-- review content injected by JS -->
+          </div>
+          <div class="mt-8 flex flex-col sm:flex-row justify-between gap-4">
+            <button onclick="flow.goBackToQuestions()" class="px-6 py-3 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="edit-3" class="w-4 h-4"></i> Editar
+            </button>
+            <button onclick="generator.generate()" class="px-8 py-4 rounded-xl bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] text-white font-semibold shadow-lg shadow-[#3B82F6]/30 hover:shadow-[#3B82F6]/50 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+              <i data-lucide="zap" class="w-5 h-5"></i> Gerar Prompt
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Result -->
+    <section id="view-result" class="view hidden">
+      <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-3xl font-bold text-white mb-1">Seu prompt está pronto</h2>
+            <p class="text-slate-400">Escolha a versão, idioma e IA de destino.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="generator.copyCurrent()" class="px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/15 transition-colors flex items-center gap-2">
+              <i data-lucide="copy" class="w-4 h-4"></i> Copiar
+            </button>
+            <button onclick="generator.downloadTxt()" class="px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/15 transition-colors flex items-center gap-2">
+              <i data-lucide="file-text" class="w-4 h-4"></i> TXT
+            </button>
+            <button onclick="generator.downloadPdf()" class="px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/15 transition-colors flex items-center gap-2">
+              <i data-lucide="file" class="w-4 h-4"></i> PDF
+            </button>
+            <button onclick="generator.share()" class="px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/15 transition-colors flex items-center gap-2">
+              <i data-lucide="share-2" class="w-4 h-4"></i> Compartilhar
+            </button>
+            <button onclick="generator.savePrompt()" class="px-4 py-2 rounded-lg bg-[#14B8A6]/20 text-[#14B8A6] hover:bg-[#14B8A6]/30 transition-colors flex items-center gap-2">
+              <i data-lucide="bookmark" class="w-4 h-4"></i> Salvar
+            </button>
+          </div>
+        </div>
+
+        <!-- Version selector -->
+        <div class="glass-card rounded-2xl p-4 mb-6">
+          <div class="flex flex-col lg:flex-row gap-4">
+            <div class="flex-1">
+              <label class="block text-xs text-slate-400 mb-2">Versão</label>
+              <div class="flex flex-wrap gap-2" id="version-selector">
+                <!-- injected -->
+              </div>
+            </div>
+            <div class="flex-1">
+              <label class="block text-xs text-slate-400 mb-2">Idioma</label>
+              <div class="flex flex-wrap gap-2" id="language-selector">
+                <!-- injected -->
+              </div>
+            </div>
+            <div class="flex-1">
+              <label class="block text-xs text-slate-400 mb-2">IA de destino</label>
+              <select id="engine-selector" class="w-full bg-[#0B1120] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#3B82F6]">
+                <!-- injected -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output -->
+        <div class="glass-card rounded-2xl p-6 sm:p-8 relative">
+          <div class="absolute top-4 right-4 flex gap-2">
+            <span id="result-meta" class="text-xs text-slate-500">Prompt completo • Português</span>
+          </div>
+          <div id="result-content" class="prose prose-invert max-w-none mt-6 whitespace-pre-wrap text-slate-200 leading-relaxed font-light"></div>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-4 justify-center">
+          <button onclick="router.navigate('new')" class="px-6 py-3 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 transition-colors">Criar outro</button>
+          <button onclick="router.navigate('history')" class="px-6 py-3 rounded-xl bg-white/10 text-white hover:bg-white/15 transition-colors">Ver histórico</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section id="view-history" class="view hidden">
+      <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <h2 class="text-3xl font-bold text-white">Histórico</h2>
+          <div class="flex gap-2">
+            <input id="history-search" type="text" placeholder="Buscar prompts..." class="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#3B82F6] w-full md:w-64">
+            <button onclick="historyManager.clearAll()" class="px-4 py-2 rounded-lg border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 transition-colors">Limpar</button>
+          </div>
+        </div>
+        <div id="history-list" class="grid gap-4">
+          <!-- injected -->
+        </div>
+        <div id="history-empty" class="hidden text-center py-20 text-slate-500">
+          <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+          <p>Nenhum prompt gerado ainda.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Favorites -->
+    <section id="view-favorites" class="view hidden">
+      <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <h2 class="text-3xl font-bold text-white">Favoritos</h2>
+          <input id="favorites-search" type="text" placeholder="Buscar favoritos..." class="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#3B82F6] w-full md:w-64">
+        </div>
+        <div id="favorites-list" class="grid gap-4">
+          <!-- injected -->
+        </div>
+        <div id="favorites-empty" class="hidden text-center py-20 text-slate-500">
+          <i data-lucide="heart" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+          <p>Nenhum favorito ainda.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Admin -->
+    <section id="view-admin" class="view hidden">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold text-white mb-6">Painel Administrativo</h2>
+        <div class="grid md:grid-cols-4 gap-4 mb-6">
+          <button onclick="admin.showTab('categories')" class="admin-tab-btn active px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/10 transition-colors" data-tab="categories">
+            <div class="text-xs text-slate-400">Categorias</div>
+            <div class="font-semibold text-white">Gerenciar categorias</div>
+          </button>
+          <button onclick="admin.showTab('questions')" class="admin-tab-btn px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/10 transition-colors" data-tab="questions">
+            <div class="text-xs text-slate-400">Perguntas</div>
+            <div class="font-semibold text-white">Perguntas por categoria</div>
+          </button>
+          <button onclick="admin.showTab('templates')" class="admin-tab-btn px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/10 transition-colors" data-tab="templates">
+            <div class="text-xs text-slate-400">Modelos</div>
+            <div class="font-semibold text-white">Templates de prompts</div>
+          </button>
+          <button onclick="admin.showTab('analytics')" class="admin-tab-btn px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-left hover:bg-white/10 transition-colors" data-tab="analytics">
+            <div class="text-xs text-slate-400">Analytics</div>
+            <div class="font-semibold text-white">Estatísticas</div>
+          </button>
+        </div>
+
+        <div id="admin-tab-categories" class="admin-tab">
+          <div class="glass-card rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-semibold text-white">Categorias</h3>
+              <button onclick="admin.addCategory()" class="px-4 py-2 rounded-lg bg-[#3B82F6]/20 text-[#3B82F6] hover:bg-[#3B82F6]/30 transition-colors text-sm">Adicionar</button>
+            </div>
+            <div id="admin-categories-list" class="space-y-2 max-h-[60vh] overflow-y-auto pr-2"></div>
+          </div>
+        </div>
+
+        <div id="admin-tab-questions" class="admin-tab hidden">
+          <div class="glass-card rounded-2xl p-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+              <h3 class="text-xl font-semibold text-white">Perguntas</h3>
+              <select id="admin-category-select" onchange="admin.renderQuestions()" class="bg-[#0B1120] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#3B82F6]"></select>
+            </div>
+            <div id="admin-questions-list" class="space-y-2 max-h-[60vh] overflow-y-auto pr-2"></div>
+          </div>
+        </div>
+
+        <div id="admin-tab-templates" class="admin-tab hidden">
+          <div class="glass-card rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-semibold text-white">Modelos de Prompt</h3>
+              <button onclick="admin.addTemplate()" class="px-4 py-2 rounded-lg bg-[#3B82F6]/20 text-[#3B82F6] hover:bg-[#3B82F6]/30 transition-colors text-sm">Adicionar</button>
+            </div>
+            <div id="admin-templates-list" class="space-y-2 max-h-[60vh] overflow-y-auto pr-2"></div>
+          </div>
+        </div>
+
+        <div id="admin-tab-analytics" class="admin-tab hidden">
+          <div class="glass-card rounded-2xl p-6">
+            <h3 class="text-xl font-semibold text-white mb-4">Estatísticas</h3>
+            <div id="analytics-chart" style="height:400px"></div>
+            <div id="analytics-summary" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300">
+    <div class="glass-card px-5 py-3 rounded-xl border border-[#3B82F6]/30 text-white flex items-center gap-3 shadow-lg shadow-[#3B82F6]/20">
+      <i data-lucide="check-circle" class="w-5 h-5 text-[#3B82F6]"></i>
+      <span id="toast-message">Sucesso</span>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="glass-card rounded-2xl p-6 max-w-lg w-full max-h-[85vh] overflow-y-auto">
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/flow.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
