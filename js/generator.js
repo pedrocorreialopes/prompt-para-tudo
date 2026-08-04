@@ -243,6 +243,7 @@ const generator = {
     const isDev = ['website', 'app', 'mobile-app', 'landing', 'ecommerce', 'dashboard', 'web-system', 'api', 'database'].includes(cat.id);
     const isImage = ['image', 'illustration', 'logo', 'banner', 'flyer', 'business-card', 'mockup', 'brand'].includes(cat.id);
     const isVideo = ['video', 'commercial', 'animation'].includes(cat.id);
+    const isText = !isDev && !isImage && !isVideo;
 
     let s = `# ${t.title}: ${data.title}\n`;
     s += `**${t.category}:** ${cat.name}\n`;
